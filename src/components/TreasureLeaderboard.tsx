@@ -55,7 +55,7 @@ function LeaderboardRow({ rank, pubkey, count }: LeaderboardRowProps) {
         )}
       </div>
       
-      <Link to={`/user/${npub}`}>
+      <Link to={`/treasures.to/${npub}`}>
         <Badge 
           variant="secondary" 
           className="text-lg px-4 py-2 cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
