@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { genUserName } from '@/lib/genUserName';
 import { Trophy, Map, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { nip19 } from 'nostr-tools';
 
 interface LeaderboardRowProps {
   rank: number;
@@ -19,6 +21,7 @@ function LeaderboardRow({ rank, pubkey, count }: LeaderboardRowProps) {
   
   const displayName = metadata?.name || genUserName(pubkey);
   const profileImage = metadata?.picture;
+  const npub = nip19.npubEncode(pubkey);
   
   // Medal colors for top 3
   const getMedalColor = (rank: number) => {
@@ -52,9 +55,14 @@ function LeaderboardRow({ rank, pubkey, count }: LeaderboardRowProps) {
         )}
       </div>
       
-      <Badge variant="secondary" className="text-lg px-4 py-2">
-        {count} {count === 1 ? 'treasure' : 'treasures'}
-      </Badge>
+      <Link to={`/user/${npub}`}>
+        <Badge 
+          variant="secondary" 
+          className="text-lg px-4 py-2 cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+        >
+          {count} {count === 1 ? 'treasure' : 'treasures'}
+        </Badge>
+      </Link>
     </div>
   );
 }
