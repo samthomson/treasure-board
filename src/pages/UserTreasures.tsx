@@ -22,38 +22,56 @@ function TreasureCard({ treasure }: { treasure: NostrEvent }) {
   
   const treasureName = nameTag || dTag || 'Unnamed Treasure';
   
+  // Create naddr for linking to treasures.to
+  let treasureUrl = '#';
+  if (dTag) {
+    try {
+      const naddr = nip19.naddrEncode({
+        identifier: dTag,
+        pubkey: treasure.pubkey,
+        kind: 37516,
+        relays: ['wss://relay.damus.io'], // Include a relay hint
+      });
+      treasureUrl = `https://treasures.to/${naddr}`;
+    } catch (error) {
+      console.error('Failed to encode naddr:', error);
+    }
+  }
+  
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-purple-600" />
-          {treasureName}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        {locationTag && (
-          <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Map className="w-4 h-4" />
-            {locationTag}
-          </p>
-        )}
-        {treasure.content && (
-          <p className="text-sm whitespace-pre-wrap break-words line-clamp-3">
-            {treasure.content}
-          </p>
-        )}
-        <div className="flex items-center justify-between pt-2">
-          <span className="text-xs text-muted-foreground">
-            {new Date(treasure.created_at * 1000).toLocaleDateString()}
-          </span>
-          {dTag && (
-            <Badge variant="outline" className="text-xs">
-              ID: {dTag.slice(0, 8)}...
-            </Badge>
+    <a href={treasureUrl} target="_blank" rel="noopener noreferrer" className="block">
+      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-purple-600" />
+            {treasureName}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {locationTag && (
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
+              <Map className="w-4 h-4" />
+              {locationTag}
+            </p>
           )}
-        </div>
-      </CardContent>
-    </Card>
+          {treasure.content && (
+            <p className="text-sm whitespace-pre-wrap break-words line-clamp-3">
+              {treasure.content}
+            </p>
+          )}
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-xs text-muted-foreground">
+              {new Date(treasure.created_at * 1000).toLocaleDateString()}
+            </span>
+            {dTag && (
+              <Badge variant="outline" className="text-xs">
+                ID: {dTag.slice(0, 8)}...
+              </Badge>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </a>
   );
 }
 
